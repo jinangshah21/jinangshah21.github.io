@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 1 - GSOC 2025 Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+    <!-- Highlight.js CSS Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <!-- Highlight.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Fortran Language Support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+    <!-- Initialize Highlight.js -->
+    <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header Section -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSOC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Content Section -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+
+    <!-- Week 1 Title -->
+    <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Week 1 - Creating workarounds and MREs for toml-f compilation</h2>
+    <p class="text-sm text-gray-500 mb-6">May 16 – May 23, 2025</p>
+
+    <!-- Week 1 Content -->
+    <div class="prose prose-gray max-w-none text-justify">
+        <p>
+          Welcome to the first blog post of my GSoC 2025 journey! This summer, I’m working with the Fortran-lang organization to compile <a href="https://github.com/fortran-lang/fpm" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
+            <code>Fortran Package Manager (FPM)</code>
+          </a> with the <a href="https://github.com/lfortran/lfortran" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
+            <code>LFortran</code>
+          </a> compiler. The project aims to enable full FPM builds using LFortran by resolving parsing, semantic, and compilation issues. FPM has some code dependencies which needs to be compiled with LFortran. The first step is to compile the <a href="https://github.com/toml-f/toml-f" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
+            <code>toml-f</code>
+          </a> 
+          library, which is a TOML parser written in Fortran. This week, I focused to compile toml-f with LFortran.
+        </p>
+      
+        <p class="mt-6 font-semibold">Work done in this week:</p>
+        <ul class="list-disc pl-6">
+
+            <li>
+              Created workarounds in the toml-f codebase to enable partial compilation with LFortran.
+              Creating workarounds in the codebase is a temporary solution to allow the code to compile and run with LFortran, even if it doesn't fully support all features of the language. Eventually, we will remove these workarounds and make the codebase fully compatible with LFortran.
+          
+              <p class="mt-2">
+                I have created a local branch with workarounds:
+                <a href="https://github.com/jinangshah21/toml-f/tree/lf-1" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
+                  <code>Branch with Workarounds</code>
+                </a>
+              </p>
+          
+              <p class="mt-2">Some of the workarounds include:
+              <ol class="list-decimal pl-6">
+                <li> Here <code>BinOp</code> inside a string reference covered with a <code>ArrayConstructor</code> was causing error. But doing this workaround, we can compile the code with LFortran. However, we need to fix this so I have created a minimal reproducible example (MRE) for this issue.
+                    <p class="mt-2"> Workaround:
+                    <script src="https://gist.github.com/jinangshah21/f2c134a97648d8ced58dd7d9050bf06a.js"></script>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7277" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7277 </a> </p></li>
+                <li>Here passing Array <code>BinOp</code> (of types A + B(:), where A is scalar and B is array) as a function argument generates an error. I did below workaround and created MRE for this and move forward.
+                    <p class="mt-2"> Workaround:
+                    <script src="https://gist.github.com/jinangshah21/9f10258e78d48a4f9badc14fe87d1902.js"></script>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7297" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7297 </a> </p></li>
+                <li> Here issue is ordering of len and kind parameter inside character variable declaration. In LFortran by default length is second argument and kind as first, but it is opposite in real. So I have worked it around and created MRE.
+                <p class="mt-2"> Workaround:
+                    <script src="https://gist.github.com/jinangshah21/f8b8ce55d65e73c91071e301b4c09e23.js"></script>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7278" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7278 </a> </p></li>
+              </ol>
+            </li>
+        </p>
+          
+            <li>
+              Creating MREs is crucial step as it provides a simplified version of the code that reproduces the issue. This allows developers to focus on the specific problem without the complexity of the entire codebase. I have created MREs for the workarounds and reported them to LFortran upstream.
+                <p class="mt-2"> MREs created: <a href="https://github.com/lfortran/lfortran/issues?q=is%3Aissue%20state%3Aopen%20label%3Atoml-f" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> MREs for toml-f </a>
+                </p>
+            </li>
+
+             <li>
+              I have created around 10 workarounds and around 15 MREs this week. For both I have given links above. 
+            </li>
+          </ul>
+          
+      
+        <p class="mt-6 font-semibold">Plan for next week:</p>
+        <ul class="list-disc pl-6">
+          <li>As many blockers in compilation of toml-f is due to weak areas for <code>Classes</code> and <code>Structs</code> in LFortran, so many MREs are related to classes and I will try to fix them as these are the issues which are hard to workaround.
+            Some Issues regarding classes: <a href="https://github.com/lfortran/lfortran/issues/7249" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7249 </a>, <a href="https://github.com/lfortran/lfortran/issues/7250" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7250 </a>, <a href="https://github.com/lfortran/lfortran/issues/7253" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7253 </a> </li>
+            <li> Also I will try to generate more MREs from toml-f compilation. </li>
+        </ul>
+      </div>      
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
