@@ -41,12 +41,12 @@
     <!-- Week 1 Content -->
     <div class="prose prose-gray max-w-none text-justify">
         <p>
-          Welcome to the first blog post of my GSoC 2025 journey! This summer, I’m working with the Fortran-lang organization to compile <a href="https://github.com/fortran-lang/fpm" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
-            <code>Fortran Package Manager (FPM)</code>
-          </a> with the <a href="https://github.com/lfortran/lfortran" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
-            <code>LFortran</code>
-          </a> compiler. The project aims to enable full FPM builds using LFortran by resolving parsing, semantic, and compilation issues. FPM has some code dependencies which needs to be compiled with LFortran. The first step is to compile the <a href="https://github.com/toml-f/toml-f" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
-            <code>toml-f</code>
+          Welcome to the first blog post of my GSoC 2025 journey! This summer, I’m working with the Fortran-lang organization to compile <a href="https://github.com/fortran-lang/fpm" target="_blank" style="text-decoration: underline; color: inherit;">
+            <strong>Fortran Package Manager (FPM)</strong>
+          </a> with the <a href="https://github.com/lfortran/lfortran" target="_blank" style="text-decoration: underline; color: inherit;">
+            <strong>LFortran</strong>
+          </a> compiler. The project aims to enable full FPM builds using LFortran by resolving parsing, semantic, and compilation issues. FPM has some code dependencies which needs to be compiled with LFortran. The first step is to compile the <a href="https://github.com/toml-f/toml-f" target="_blank" style="text-decoration: underline; color: inherit;">
+            <strong>toml-f</strong>
           </a> 
           library, which is a TOML parser written in Fortran. This week, I focused to compile toml-f with LFortran.
         </p>
@@ -60,8 +60,8 @@
           
               <p class="mt-2">
                 I have created a local branch with workarounds:
-                <a href="https://github.com/jinangshah21/toml-f/tree/lf-1" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;">
-                  <code>Branch with Workarounds</code>
+                <a href="https://github.com/jinangshah21/toml-f/tree/lf-1" target="_blank" style="text-decoration: underline; color: inherit;">
+                  <strong>Branch with Workarounds</strong>
                 </a>
               </p>
           
@@ -70,22 +70,22 @@
                 <li> Here <code>BinOp</code> inside a string reference covered with a <code>ArrayConstructor</code> was causing error. But doing this workaround, we can compile the code with LFortran. However, we need to fix this so I have created a minimal reproducible example (MRE) for this issue.
                     <p class="mt-2"> Workaround:
                     <script src="https://gist.github.com/jinangshah21/f2c134a97648d8ced58dd7d9050bf06a.js"></script>
-                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7277" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7277 </a> </p></li>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7277" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7277</strong> </a> </p></li>
                 <li>Here passing Array <code>BinOp</code> (of types A + B(:), where A is scalar and B is array) as a function argument generates an error. I did below workaround and created MRE for this and move forward.
                     <p class="mt-2"> Workaround:
                     <script src="https://gist.github.com/jinangshah21/9f10258e78d48a4f9badc14fe87d1902.js"></script>
-                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7297" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7297 </a> </p></li>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7297" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7297</strong></a> </p></li>
                 <li> Here issue is ordering of len and kind parameter inside character variable declaration. In LFortran by default length is second argument and kind as first, but it is opposite in real. So I have worked it around and created MRE.
                 <p class="mt-2"> Workaround:
                     <script src="https://gist.github.com/jinangshah21/f8b8ce55d65e73c91071e301b4c09e23.js"></script>
-                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7278" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7278 </a> </p></li>
+                    LFortran MRE: Refer  <a href="https://github.com/lfortran/lfortran/issues/7278" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7278</strong> </a> </p></li>
               </ol>
             </li>
         </p>
           
             <li>
               Creating MREs is crucial step as it provides a simplified version of the code that reproduces the issue. This allows developers to focus on the specific problem without the complexity of the entire codebase. I have created MREs for the workarounds and reported them to LFortran upstream.
-                <p class="mt-2"> MREs created: <a href="https://github.com/lfortran/lfortran/issues?q=is%3Aissue%20state%3Aopen%20label%3Atoml-f" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> MREs for toml-f </a>
+                <p class="mt-2"> MREs created: <a href="https://github.com/lfortran/lfortran/issues?q=is%3Aissue%20state%3Aopen%20label%3Atoml-f" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>MREs for toml-f</strong> </a>
                 </p>
             </li>
 
@@ -94,11 +94,17 @@
             </li>
           </ul>
           
-      
+        <p class="mt-4">
+          I would like to sincerely thank 
+          <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej Čertík</strong></a> 
+          and 
+          <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav Goswami</strong></a> 
+          for their continuous guidance and support. Also I would like to thank LFortran team members who fixed some MREs I posted which makes a speedy progress.
+        </p>
         <p class="mt-6 font-semibold">Plan for next week:</p>
         <ul class="list-disc pl-6">
           <li>As many blockers in compilation of toml-f is due to weak areas for <code>Classes</code> and <code>Structs</code> in LFortran, so many MREs are related to classes and I will try to fix them as these are the issues which are hard to workaround.
-            Some Issues regarding classes: <a href="https://github.com/lfortran/lfortran/issues/7249" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7249 </a>, <a href="https://github.com/lfortran/lfortran/issues/7250" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7250 </a>, <a href="https://github.com/lfortran/lfortran/issues/7253" target="_blank" style="border-bottom: 1px dotted; text-decoration: none; color: inherit;"> Issue 7253 </a> </li>
+            Some Issues regarding classes: <a href="https://github.com/lfortran/lfortran/issues/7249" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7249</strong> </a>, <a href="https://github.com/lfortran/lfortran/issues/7250" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7250</strong>  </a>, <a href="https://github.com/lfortran/lfortran/issues/7253" target="_blank" style="text-decoration: underline; color: inherit;"> <strong>Issue 7253</strong> </a> </li>
             <li> Also I will try to generate more MREs from toml-f compilation. </li>
         </ul>
       </div>      
