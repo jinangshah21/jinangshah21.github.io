@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 4 - GSOC 2025 Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header Section -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSOC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Content Section -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+
+    <!-- Week 4 Title -->
+    <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Week 4 - Building toml-f, fortran-shlex completely with LFortran</h2>
+    <p class="text-sm text-gray-500 mb-6">June 7 – June 13, 2025</p>
+
+    <!-- Week 4 Content -->
+    <div class="prose prose-gray max-w-none text-justify">
+      <p>
+        Welcome back! This week marked a major step in my GSOC project with the successful full compilation of 
+        <strong>toml-f</strong>, <strong>fortran-shlex</strong>, and <strong>fortran-regex</strong> using 
+        <a href="https://github.com/lfortran/lfortran" target="_blank" style="text-decoration: underline; color: inherit;"><strong>LFortran</strong></a> with few workarounds. 
+        My primary focus was creating targeted MREs and fixing remaining issues related to character handling, struct types, and polymorphic variables in 
+        <a href="https://github.com/toml-f/toml-f" target="_blank" style="text-decoration: underline; color: inherit;"><strong>toml-f</strong></a>.
+      </p>
+
+      <p class="mt-6 font-semibold">Work done in this week:</p>
+      <ul class="list-disc pl-6 space-y-4">
+        <li>
+          <strong>MREs and Fixes for toml-f Compilation:</strong>
+          <ul class="list-disc pl-6 mt-2">
+            <li>Created minimal reproducible examples (MREs) for several edge cases (ASR to LLVM) involving class types, optional parameters, and intrinsic procedures.</li>
+            <li>Reported detailed issues and submitted corresponding fixes upstream in <strong>LFortran</strong> repo.</li>
+            <li>These changes ensured 100% compilation success for toml-f with LFortran with few workarounds (tests still pending).</li>
+            <li>Sample Issues:
+              <ul class="list-[circle] pl-6 mt-1">
+                <li><a href="https://github.com/lfortran/lfortran/issues/7644" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7644</strong></a>: Handle class variable passed into subroutine call as nested subroutine var</li>
+                <li><a href="https://github.com/lfortran/lfortran/issues/7650" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7650</strong></a>: Handle StructConstructor inside a derived type</li>
+                <li><a href="https://github.com/lfortran/lfortran/issues/7679" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7679</strong></a>: Handle default StructConstructor call when customized constructors are defined</li>
+                <li><a href="https://github.com/lfortran/lfortran/issues/7648" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7648</strong></a>: Handle class instance member in deallocate properly</li>
+              </ul>
+            </li>
+            <li>Sample PRs:
+              <ul class="list-[circle] pl-6 mt-1">
+                <li><a href="https://github.com/lfortran/lfortran/pull/7632" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7632</strong></a>: Support allocatable structType variable assignmen</li>
+                <li><a href="https://github.com/lfortran/lfortran/pull/7661" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7661</strong></a>: Handle load of class and struct member in deallocate</li>
+                <li><a href="https://github.com/lfortran/lfortran/pull/7634" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7634</strong></a>: Handle class pointer passed/returned in function</li>
+                <li><a href="https://github.com/lfortran/lfortran/pull/7669" target="_blank" style="text-decoration: underline; color: inherit;"><strong>#7669</strong></a>: Handle nested StructInstanceMember in deallocate</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>FPM Dependency Status:</strong>
+          <ul class="list-disc pl-6 mt-2">
+            <li><strong>toml-f</strong>: 100% compilation achieved. Workaround branch: <a href="https://github.com/jinangshah21/toml-f/tree/lf-1" target="_blank" style="text-decoration: underline; color: inherit;"><strong>tomlf-lf-1</strong></a>.</li>
+            <li><strong>fortran-shlex</strong>: Fully compiles. Workaround branch: <a href="https://github.com/jinangshah21/fortran-shlex/tree/lf-1" target="_blank" style="text-decoration: underline; color: inherit;"><strong>shlex-lf-1</strong></a>.</li>
+            <li><strong>fortran-regex</strong>: Successfully builds.</li>
+            <li><strong>MCLI2</strong> and <strong>jonquil</strong> are compiling partially.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p class="mt-6">
+        This week I worked for around 18–20 hours, primarily focused on eliminating few set of blockers and getting all three core dependencies to compile with few workarounds. 
+        We’re now in a good position to shift attention toward compiling MCLI2, jonquil and eventually FPM that depend on these.
+      </p>
+
+      <p class="mt-6">
+        Huge thanks to 
+        <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej Čertík</strong></a> 
+        and 
+        <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav Goswami</strong></a> 
+        for their constant reviews, guidance, and suggestions throughout this week. Also thanks to all LFortran members who had helped me in my project.
+      </p>
+
+      <p class="mt-6 font-semibold">Plan for next week:</p>
+      <ul class="list-disc pl-6">
+        <li>I had discussion with my mentors and we decided to use breadth-first strategy and try to compile whole FPM first to LLVM and then we will test all dependencies and FPM itself. So I will Begin compilation of <strong>MCLI2</strong> and <strong>jonquil</strong> as per discussion with my mentors.</li>
+        <li>Goal will be similar like I did for toml-f - Generate MREs and fix them to ensure LFortran compile code completely (Maybe with few workarounds).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
