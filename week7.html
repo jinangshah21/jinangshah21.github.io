@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 7 - GSOC 2025 Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header Section -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSOC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Content Section -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+    <!-- Week 7 Title -->
+    <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Week 7 - Continuing FPM Compilation</h2>
+    <p class="text-sm text-gray-500 mb-6">June 28 – July 4, 2025</p>
+
+    <div class="prose prose-gray max-w-none text-justify">
+      <p>
+        This week was a little step forward to our goal — <strong>FPM compiled 90%</strong> with <strong>LFortran</strong>. With persistent effort, workarounds, and small upstream fixes, most core modules are now compiling successfully. Only a few components remain, blocked by tricky frontend bugs which I will be fixing.
+      </p>
+
+      <p>
+        I continued to use the same process: isolating issues, producing MREs, and submitting bug reports or fixes. Several more test cases were extracted and contributed as issues. This helped maintain clarity about blockers, while I started fixing older issues as well.
+      </p>
+
+      <p class="mt-6 font-semibold">Work done this week:</p>
+      <ul class="list-disc pl-6 space-y-4">
+        <li>
+          <strong>Compiled most of FPM to ASR:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li>FPM is now 90% compiled using LFortran.</li>
+            <li>Worked around operator overloading and external enum symbol issues to enable more modules to compile.</li>
+            <li>Once this frontend issues get fixed I will have to fix LLVM backend Issues.</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Important MREs created this week:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/issues/7929" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue 7929</strong></a>: Handle class procedure operator overloading where operator definition is in parent type</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/7882" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue 7882</strong></a>: Handle keyword arguments in type bound functions</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/7962" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue 7962</strong></a>: enum which is indirectly imported from module present in other file is not found in serialization</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Important Fixes and Pull Requests:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/pull/7914" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #7914</strong></a>: Don't expose private functions of module and handle scope of private. Previously LFortran was also importing private members from module which was causing conflicts in name of function.</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/7930" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #7930</strong></a>: Get correct operator overloading function for extended types. Previously LFortran was not resolving operator overloaded function which was defined in base class. So I resolved it by searching in every parent type.</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/7942" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #7942</strong></a>: Consider external procedures and type bound procedures both for checking op overloading. Previously LFortran was not searching for operator overloading function in type symbol if there is any external interface declared for that operator. I resolved it by inspecting all operator overloading options available and then decide using its signature.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p class="mt-4">
+        Overall, around 20 hours were spent this week toward debugging and compiling FPM. With 90% compilation achieved, the remaining issues are clearer and fewer. 
+      </p>
+
+      <p class="mt-6">
+        Special thanks to <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej Čertík</strong></a> and <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav Goswami</strong></a> for their continuous help with reviews, clarifications, and guidance. Thanks to LFortran team members for helping when needed.
+      </p>
+
+      <p class="mt-6 font-semibold">Plan for next week:</p>
+      <ul class="list-disc pl-6">
+        <li>Complete full FPM compilation with LFortran using workarounds where needed.</li>
+        <li>Fix or document final blocking issues with new MREs.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
