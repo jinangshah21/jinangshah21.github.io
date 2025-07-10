@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 8 - GSOC 2025 Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header Section -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSOC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Content Section -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+    <!-- Week 8 Title -->
+    <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Week 8 - Compiling FPM till ASR (frontend)</h2>
+    <p class="text-sm text-gray-500 mb-6">July 5 – July 11, 2025</p>
+
+    <div class="prose prose-gray max-w-none text-justify">
+      <p>
+        Welcome back! It's 8th week and the Fortran Package Manager (FPM) now compiles fully till the <strong>ASR (Abstract Semantic Representation)</strong> stage using LFortran! The focus was primarily on creating and fixing MREs related to <code>fpm</code> and <code>tomlf</code> compilation, uncovering deeper issues in AST-to-ASR and some ASR-to-LLVM logic.
+      </p>
+
+      <p>
+        Many errors encountered were due tocomplex complex language features like <strong>runtime polymorphism</strong>, <strong>type-bound procedures</strong>, <strong>select type resolution</strong>, and <strong>interface dispatching</strong>. These are now isolated, with some fixed and others with MREs which I will be fixing later.
+      </p>
+
+      <p class="mt-6 font-semibold">Work done this week:</p>
+      <ul class="list-disc pl-6 space-y-4">
+        <li>
+          <strong>FPM compiled fully till ASR stage:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li>All core modules and dependencies now emit correct ASR without fatal errors and 5-6 workarounds for which we have MREs.</li>
+            <li>Started identifying and resolving ASR to LLVM issues.</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Key MREs created:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/pull/7974" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #7974</strong></a>: Handle type containing procedure in select type inside another type bound procedure</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/7984" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #7984</strong></a>: Handle association of m_assoc_name variable to structInstanceMember in select type statements</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/8009" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8009</strong></a>: Handle deffered operator overloading used in a type bound procedure</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Sample Fixes / Pull Requests:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/pull/7978" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #7978</strong></a>: Maintain current selector var properly and use it to get current derived type</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/7975" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #7975</strong></a>: Get struct vtab correctly if not present in scope</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/8001" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #8001</strong></a>: Check current selector name for deciding is_polymorphic in visit_Arrayitem</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p class="mt-4">
+        This week involved around 18 hours of focused debugging and implementation. Next focus will be to get fpm soon till LLVM.
+      </p>
+
+      <p class="mt-6">
+        Huge thanks to <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej Čertík</strong></a> and <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav Goswami</strong></a> for continued feedback and reviews. 
+      </p>
+
+      <p class="mt-6 font-semibold">Plan for next week:</p>
+      <ul class="list-disc pl-6">
+        <li>Resolve blocking ASR to LLVM issues and generate full IR for FPM.</li>
+        <li>Submit remaining patches for polymorphism improvements.</li>
+        <li>Ensure FPM builds reproducibly on LFortran via CI pipeline by end of next week.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
