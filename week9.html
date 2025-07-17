@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 9 - GSOC 2025 Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header Section -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSOC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Content Section -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+    <!-- Week 9 Title -->
+    <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Week 9 - Towards ASR to LLVM FPM compilation</h2>
+    <p class="text-sm text-gray-500 mb-6">July 12 – July 18, 2025</p>
+
+    <div class="prose prose-gray max-w-none text-justify">
+      <p>
+        Welcome to Week 9! This week was focused on resolving the LLVM generation stage for the Fortran Package Manager (FPM) via LFortran. Many issues previously blocked in the ASR-to-LLVM phase are now either fixed or isolated via MREs. Half the modules now compile fully to LLVM IR.
+      </p>
+
+      <p>
+        The core bottlenecks addressed include <strong>operator overloading resolution</strong> and <strong>class polymorphism handling</strong>. We now estimate around 8–10 remaining issues to complete the full LLVM IR generation for FPM!
+      </p>
+
+      <p class="mt-6 font-semibold">Work done this week:</p>
+      <ul class="list-disc pl-6 space-y-4">
+        <li>
+          <strong>ASR to LLVM Fixes:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li>50% of FPM modules now successfully compile to LLVM code.</li>
+            <li>Key issues fixed around class methods and operator resolution.</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Example workarounds:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><script src="https://gist.github.com/jinangshah21/b3b8352692a7414fd4e1f839e04395e6.js"></script></li>
+            <li><script src="https://gist.github.com/jinangshah21/1feb495e00e316a7b1d2f548bfc312d4.js"></script></li>
+            <li><script src="https://gist.github.com/jinangshah21/dcf5cf268ffa9b2f3107785e2db25cac.js"></script></li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Key MREs created:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/issues/8044" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8044</strong></a>: Allow type variable passed to function which expects pointer to type variable and is intent(in)</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/8045" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8045</strong></a>: Handle StructType array passed to function which expects ClassType Array</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/8061" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8061</strong></a>: Handle Passing pointer structInstanceMember to recursive function which not expect pointer</li>
+            <li><a href="https://github.com/lfortran/lfortran/issues/8046" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8046</strong></a>: Handle parent Type assignments where we directly assign all members of parent. This is a new feature that we need to handle to assign all members of subclass with one expression. I will be fixing this next week.</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>Sample Fixes / Pull Requests:</strong>
+          <ul class="list-[circle] pl-6 mt-1">
+            <li><a href="https://github.com/lfortran/lfortran/pull/8053" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #8053</strong></a>: Handles pointer to data array in convert polymorphic arg where actual arg is not classType</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/8058" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #8058</strong></a>: Allow passing value to function which expects pointer when argument is intent(in). Previously LFortran was not allowing it but it should be allowed.</li>
+            <li><a href="https://github.com/lfortran/lfortran/pull/8059" target="_blank" style="text-decoration: underline; color: inherit;"><strong>PR #8059</strong></a>: Check if Struct member is fixed size array while creating temporary. Basically, here if struct array member's size is not fixed then we can't determine it at compile time. So while creating temporary we need to keep it as allocatable and allocate length at runtime.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p class="mt-4">
+        Around 18 hours were spent this week understanding the ASR-to-LLVM bridge and debugging crashes. With these improvements, the LLVM generation stage is now highly promising.
+      </p>
+
+      <p class="mt-6">
+        Thanks again to <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej Čertík</strong></a> and <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav Goswami</strong></a> for guiding tricky LLVM fixes and reviewing MRs.
+      </p>
+
+      <p class="mt-6 font-semibold">Plan for next week:</p>
+      <ul class="list-disc pl-6">
+        <li>Target remaining 8–10 LLVM MREs and enable full FPM IR generation.</li>
+        <li>Fixing all MREs that are remaining.</li>
+        <li>Set FPM on CI Pipeline to test.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
