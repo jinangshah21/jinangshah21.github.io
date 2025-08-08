@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 12 - GSoC 2025 Final Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-fortran.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/fortran.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+
+  <!-- Header -->
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white text-center py-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold tracking-widest">Compiling FPM with LFortran</h2>
+    <p class="mt-2 text-lg md:text-xl font-medium">GSoC 2025 @Fortran-lang</p>
+    <p class="mt-1 text-sm md:text-base text-gray-300">by Jinang Shah</p>
+  </section>
+
+  <!-- Blog Content -->
+  <section class="px-6 py-10 max-w-4xl mx-auto">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Week 12 – Creating tricky MREs, Fixes and Closing GSoC journey</h2>
+    <p class="text-sm text-gray-500 mb-6">August 2 – August 8, 2025</p>
+
+    <div class="prose prose-gray max-w-none text-justify">
+      <p>
+        This final week was a deep dive into the heart of the bugs that had haunted us throughout the summer — the ones that didn’t yet have reproducible MREs, or worse, had partial workarounds in the FPM build. These were workarounds where commenting a single statements make code compiling else it crashes. So I understood fortran codeflow properly for that particular line like which variables are used, what struct is used, its intent, its location etc. and with focus I tried to replicate same scenario in a small fortran code which can reproduce same error and I was successful doing that.
+      </p>
+
+      <p>
+        So primary goal was to get all MREs for workarounds that were just a commented line without know reason why it was failing. There were 5-6 MREs which were not having MREs and were tricky to create one.
+      </p>
+
+      <p class="mt-6 font-semibold">Work done this week:</p>
+      <ul class="list-disc pl-6">
+        <li>Create MREs for 5-6 workarounds on <a href="https://github.com/jinangshah21/fpm/tree/lf-6" target="_blank" style="text-decoration: underline; color: inherit;"><strong>lf-6 branch</strong></a> which were tricky ones. So we have MREs for all workarounds on fpm local branch.</li>
+        <li>Reduced workarounds number to ~10 from ~20 (Tested at LFortran CI)</li>
+        <li>Fixed 8-10 MREs which helped me to remove workarounds from fpm codebase</li>
+        <li>Fixed all Regressions from StructType Refactor</li>
+      </ul>
+
+      <h3 class="font-semibold mt-6">Some of tricky MREs created:</h3>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><a href="https://github.com/lfortran/lfortran/issues/8240" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8240</strong></a>: Class vtab pointer got out of scope in if else condition when another type is passed as argument in type bound procedure. Basically vtab for struct was getting declared in if block and LFortran was using same variable in else block which is not syntactical correct.</li>
+        <li><a href="https://github.com/lfortran/lfortran/issues/8252" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8252</strong></a>: Nested subroutine variable of structType (which is stored as a global Var in LLVM IR) has incorrect order of its member. Consider original order of members was <code>[b,a,c]</code> but global var was storing it alphabetically as <code>[a,b,c]</code>. This was just a small fix but creating this MREs was very tricky.</li>
+        <li><a href="https://github.com/lfortran/lfortran/issues/8257" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8257</strong></a>: Handle type bound generic procedure call properly in serialization while creating .mod files</li>
+      </ul>
+
+      <h3 class="font-semibold mt-6">Some important Fixes pushed:</h3>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><a href="https://github.com/lfortran/lfortran/issues/8265" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8265</strong></a>: Handle nested struct members of ArrayItem. Here I handled a small bug in ASR for complex expressions like <code>a%b%c%d(i)</code></li>
+        <li><a href="https://github.com/lfortran/lfortran/issues/8261" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8261</strong></a>: handle parent type struct member in backend. Here I handled examples like below:</li>
+        <script src="https://gist.github.com/jinangshah21/a094ffa0c3828a57a0ea9b8815765e0e.js"></script>
+        <li><a href="https://github.com/lfortran/lfortran/issues/8273" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Issue #8273</strong></a>: Store data member of Struct_t in same order as declared in original code while initializing global variable. It is fix corresponding 2nd issue listed above</li>
+      </ul>
+
+      <h3 class="font-semibold mt-6">Final Status</h3>
+      <ul class="list-disc pl-6">
+        <li>FPM now compiles 100% with LFortran-LLVM backend</li>
+        <li>Only 10 minimal workarounds remain (down from ~25)</li>
+        <li>MREs written for all known workarounds</li>
+        <li>LFortran CI for testing fpm lf-6 branch is active and green</li>
+      </ul>
+
+      <h3 class="font-semibold mt-6">What I Learned This Summer</h3>
+      <p>
+        More than just fixing bugs, I learned to see through the layers of a compiler — from the user's Fortran code to the final LLVM IR. I now understand in detail:
+      </p>
+      <ul class="list-disc pl-6 mt-2 space-y-1">
+        <li>How ASR (Abstract Semantic Representation) enables both flexibility and strict correctness</li>
+        <li>How Object Oriented Stuff is working in LFortran codebase and improvements needs.</li>
+        <li>How to optimize at different locations in ASR and LLVM. For eg. something that is not used in original fortran code or any extra operations we are doing which are not needed at all.</li>
+        <li>The value of simplifying problems until the compiler has no escape hatch</li>
+      </ul>
+
+      <p>
+        I also grew significantly in engineering discipline — writing clean test cases, maintaining PR hygiene, and collaborating asynchronously with global contributors.
+      </p>
+      <p>
+        I created around 100+ MREs and pushed 100+ Fixes for getting FPM compiled with LFortran with just 10 workarounds. So during this summer struct/class/OOP related stuff was robustly tested at integration tests using these MRE.
+      </p>
+
+      <h3 class="font-semibold mt-6">Acknowledgements</h3>
+      <p>
+        Deep thanks to my mentors <a href="https://ondrejcertik.com/" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Ondřej</strong></a> and <a href="https://github.com/Pranavchiku" target="_blank" style="text-decoration: underline; color: inherit;"><strong>Pranav</strong></a> — for not only helping me unblock technical hurdles, but also encouraging me to push for deeper understanding. Thanks also to <strong>LFortran Community</strong> to have such a great collaborative environment and help.
+      </p>
+      <p>
+        Thanks to GSoC and Fortran-lang to give me this opportunity and it helped me a lot for upgrading skills and collaborating with different people.
+      </p>
+
+      <h3 class="font-semibold mt-6">What’s Next</h3>
+      <ul class="list-disc pl-6 space-y-1">
+        <li>Remove remaining 10 workarounds with upstream fixes</li>
+        <li>Test FPM by running fpm tests on CI</li>
+        <li>Looking forward to contribute to LFortran in future</li>
+      </ul>
+
+      <h3 class="font-semibold text-green-700 mt-8">✨ Final Words</h3>
+      <p>
+        GSoC 2025 was much more than 12 weeks of coding — it was a chance to become a real part of a compiler’s growth story, contribute meaningfully to the Fortran ecosystem, and connect with a fantastic community.
+      </p>
+      <p>
+        I plan to continue maintaining and improving LFortran — not just as a contributor, but as someone who now understands how powerful this project can be for compiling modern Fortran codes.
+      </p>
+      <p>
+        Thank you to everyone at Fortran-lang. Onward!
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-8 text-sm text-gray-600">
+    <div class="flex justify-center space-x-6 mb-2 text-gray-700 text-xl">
+      <a href="https://github.com/jinangshah21" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github hover:text-gray-900"></i>
+      </a>
+      <a href="mailto:jinang2110@gmail.com" aria-label="Email">
+        <i class="fas fa-envelope hover:text-gray-900"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/jinang-shah-0ba968255" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin hover:text-blue-700"></i>
+      </a>
+    </div>
+    <p>Thanks for reading — and for following along this summer. ❤️</p>
+  </footer>
+
+</body>
+</html>
